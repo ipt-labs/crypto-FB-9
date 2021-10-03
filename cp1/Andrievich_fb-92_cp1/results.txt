@@ -1,5 +1,0 @@
-H1 with whitespaces: 4.376013208231846
-H2 with whitespaces: 2.9039857423897684
-
-H1 without whitespaces: 4.4507435574840315
-H2 without whitespaces: 3.3499226595401437
