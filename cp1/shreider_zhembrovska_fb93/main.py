@@ -2,8 +2,8 @@ import math
 from collections import Counter
 
 
-alph = ["а","б","в","г","д","е","ё","ж","з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц","ч","ш","щ",
-        "ъ","ы","ь","э","ю","я", " "]
+alph = ["а","б","в","г","д","е","ж","з","и","й","к","л","м","н","о","п","р","с","т","у","ф","х","ц","ч","ш","щ", "ы",
+        "ь","э","ю","я", " "]
 
 #text editing
 text_spaces = []
@@ -16,6 +16,10 @@ with open('text.txt', 'r', encoding = 'utf-8') as f:
 
     space = False
     for i in range(length):
+        if file[i] == "ё":
+            file[i] == "e"
+        if file[i] == "ъ":
+             file[i] == "ь"
         if file[i] in alph:
             if file[i] == " ":
                 if space == True:
@@ -79,20 +83,3 @@ print("H2 text with spaces with intersections", bigrams_entropy(text_spaces, 1))
 print("H2 text without spaces without intersections", bigrams_entropy(text_nospaces, 0))
 print("H2 text without spaces without intersections", bigrams_entropy(text_nospaces, 1))
 
-print("\nFrequency of monograms in text with spaces\n")
-letters_entropy(text_spaces)
-
-print("\nFrequency of monograms in text without spaces\n")
-letters_entropy(text_nospaces)
-
-print("\nFrequency of bigrams in text with spaces without intersections\n")
-bigrams_entropy(text_spaces, 0)
-
-print("\nFrequency of bigrams in text with spaces with intersections\n")
-bigrams_entropy(text_spaces, 1)
-
-print("\nFrequency of bigrams in text without spaces without intersections\n")
-bigrams_entropy(text_nospaces, 0)
-
-print("\nFrequency of bigrams in text without spaces with intersections\n")
-bigrams_entropy(text_nospaces, 1)
