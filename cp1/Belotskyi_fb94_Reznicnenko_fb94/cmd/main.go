@@ -13,7 +13,7 @@ func check(err error){
 	}
 }
 
-func replaceLetters(path string) string {
+func replaceLettersSpaces(path string){
 	file, err := ioutil.ReadFile(path)
 	check(err)
 
@@ -23,18 +23,27 @@ func replaceLetters(path string) string {
 	re = regexp.MustCompile(`ъ`)
 	text2 := re.ReplaceAllString(string(text1), `ь`)
 
-	return text2
+	f1, err := os.OpenFile("../docs/TextWithSpaces.txt", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	check(err)
+
+	_, err2 := f1.WriteString(text1)
+	check(err2)
+
+	spaces := regexp.MustCompile(` `)
+	withoutSpaces := spaces.ReplaceAllString(string(text2), ``)
+
+	f2, err := os.OpenFile("../docs/TextWithoutSpaces.txt", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	check(err)
+
+	_, err3 := f2.WriteString(withoutSpaces)
+	check(err3)
+
 }
 
 
 func main(){
 
-	text := replaceLetters("../docs/text.txt")
+	replaceLettersSpaces("../docs/text.txt")
 
-	file, err := os.OpenFile("../docs/TextWithSpaces.txt", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
-	check(err)
-
-	_, err2 := file.WriteString(text)
-	check(err2)
 }
 
