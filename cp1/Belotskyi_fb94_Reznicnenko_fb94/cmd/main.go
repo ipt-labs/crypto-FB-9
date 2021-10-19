@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"regexp"
-	"strings"
 )
 
 func check(err error){
@@ -14,33 +13,28 @@ func check(err error){
 	}
 }
 
-func main(){
-	file, err := ioutil.ReadFile("../docs/text.txt")
+func replaceLetters(path string) string {
+	file, err := ioutil.ReadFile(path)
 	check(err)
 
-	var re = regexp.MustCompile(`[[:punct:]]`)
+	var re = regexp.MustCompile(`ё`)
+	text1 := re.ReplaceAllString(string(file), `е`)
 
-	text := re.ReplaceAllString(string(file), "")
+	re = regexp.MustCompile(`ъ`)
+	text2 := re.ReplaceAllString(string(text1), `ь`)
 
-	noDashes := strings.Replace(text, "—", "", -1)
-
-	noDoubleSpace := strings.Replace(noDashes, "  ", "", -1)
-
-	fileWithSpaces, err2 := os.OpenFile("../docs/TextWithSpaces.txt", os.O_RDWR|os.O_APPEND, 0660)
-
-	check(err2)
-
-	_, err3 := fileWithSpaces.WriteString(noDoubleSpace)
-	check(err3)
-
-	noSpaces := strings.Replace(noDoubleSpace, " ", "", -1)
-
-	fileWithoutSpaces, err4 := os.OpenFile("../docs/TextWithoutSpaces.txt", os.O_RDWR|os.O_APPEND, 0660)
-	check(err4)
-
-	_, err5 := fileWithoutSpaces.WriteString(noSpaces)
-	check(err5)
-
-	//fmt.Println(noDoubleSpace)
-
+	return text2
 }
+
+
+func main(){
+
+	text := replaceLetters("../docs/text.txt")
+
+	file, err := os.OpenFile("../docs/TextWithSpaces.txt", os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666)
+	check(err)
+
+	_, err2 := file.WriteString(text)
+	check(err2)
+}
+
