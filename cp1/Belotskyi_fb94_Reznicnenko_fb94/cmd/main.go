@@ -45,5 +45,6 @@ func main(){
 
 	replaceLettersSpaces("../docs/text.txt")
 
+
 }
 
