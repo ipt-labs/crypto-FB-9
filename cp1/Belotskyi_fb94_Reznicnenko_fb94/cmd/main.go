@@ -87,7 +87,7 @@ func countLetters(text string, count int) map[rune]int{
 	for i := 0; i <= count; i++{
 		for j := 0; j <= 30; j++{
 			if lettersArray[i] == letters[i]{
-
+				fmt.Println("hello")
 			}
 		}
 	}
