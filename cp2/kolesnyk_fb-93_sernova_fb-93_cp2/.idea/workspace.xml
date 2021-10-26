@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7cab539c-997b-427f-980c-8ee0d1a8bd41" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lab2_res.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +75,7 @@
       <workItem from="1635083609091" duration="2630000" />
       <workItem from="1635086695075" duration="1617000" />
       <workItem from="1635251497291" duration="792000" />
-      <workItem from="1635256019658" duration="1311000" />
+      <workItem from="1635256019658" duration="1645000" />
     </task>
     <servers />
   </component>
