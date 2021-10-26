@@ -51,7 +51,7 @@ func countLetters(text string) map[string]int{
 
 	lettersCount := map[string]int{
 
-		"a": 0,
+		"а": 0,
 		"б": 0,
 		"в": 0,
 		"г": 0,
@@ -84,7 +84,7 @@ func countLetters(text string) map[string]int{
 		"я": 0,
 	}
 	alphabet := []string{
-		"a",
+		"а",
 		"б",
 		"в",
 		"г",
