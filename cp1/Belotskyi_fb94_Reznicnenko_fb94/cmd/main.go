@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 func check(err error){
@@ -49,6 +50,7 @@ func replaceLettersSpaces(path string) string{
 func countLetters(text string) map[string]int{
 
 	lettersCount := map[string]int{
+
 		"a": 0,
 		"б": 0,
 		"в": 0,
@@ -131,8 +133,8 @@ func main(){
 
 	text := replaceLettersSpaces("../docs/text.txt")
 
-	//count := utf8.RuneCountInString(text)
-	//fmt.Println(count)
+	count := utf8.RuneCountInString(text)
+	fmt.Println(count)
 
 	fmt.Println(countLetters(text))
 
