@@ -1,14 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"regexp"
 	"strings"
-	"unicode/utf8"
 )
 
 func check(err error){
@@ -48,61 +46,94 @@ func replaceLettersSpaces(path string) string{
 
 }
 
-func countLetters(text string, count int) map[rune]int{
-	letters := map[rune]int{
-		'a': 0,
-		'б': 0,
-		'в': 0,
-		'г': 0,
-		'д': 0,
-		'е': 0,
-		'ж': 0,
-		'з': 0,
-		'и': 0,
-		'й': 0,
-		'к': 0,
-		'л': 0,
-		'м': 0,
-		'н': 0,
-		'о': 0,
-		'п': 0,
-		'р': 0,
-		'с': 0,
-		'т': 0,
-		'у': 0,
-		'ф': 0,
-		'х': 0,
-		'ц': 0,
-		'ч': 0,
-		'ш': 0,
-		'щ': 0,
-		'ы': 0,
-		'ь': 0,
-		'э': 0,
-		'ю': 0,
-		'я': 0,
+func countLetters(text string) map[string]int{
+
+	lettersCount := map[string]int{
+		"a": 0,
+		"б": 0,
+		"в": 0,
+		"г": 0,
+		"д": 0,
+		"е": 0,
+		"ж": 0,
+		"з": 0,
+		"и": 0,
+		"й": 0,
+		"к": 0,
+		"л": 0,
+		"м": 0,
+		"н": 0,
+		"о": 0,
+		"п": 0,
+		"р": 0,
+		"с": 0,
+		"т": 0,
+		"у": 0,
+		"ф": 0,
+		"х": 0,
+		"ц": 0,
+		"ч": 0,
+		"ш": 0,
+		"щ": 0,
+		"ы": 0,
+		"ь": 0,
+		"э": 0,
+		"ю": 0,
+		"я": 0,
+	}
+	alphabet := []string{
+		"a",
+		"б",
+		"в",
+		"г",
+		"д",
+		"е",
+		"ж",
+		"з",
+		"и",
+		"й",
+		"к",
+		"л",
+		"м",
+		"н",
+		"о",
+		"п",
+		"р",
+		"с",
+		"т",
+		"у",
+		"ф",
+		"х",
+		"ц",
+		"ч",
+		"ш",
+		"щ",
+		"ы",
+		"ь",
+		"э",
+		"ю",
+		"я",
 	}
 	lettersArray := strings.Split(text, "")
 
-	for i := 0; i <= count; i++{
-		for j := 0; j <= 30; j++{
-			if lettersArray[i] == letters[i]{
-				fmt.Println("hello")
+	for i, _ := range lettersArray{
+		for j, _ := range alphabet {
+			if alphabet[j] == strings.ToLower(lettersArray[i])  {
+				lettersCount[strings.ToLower(lettersArray[i])]++
+				continue
 			}
 		}
 	}
-
-
-
-	return letters
+	return lettersCount
 }
 
 func main(){
 
 	text := replaceLettersSpaces("../docs/text.txt")
 
-	lettersCount := utf8.RuneCountInString(text)
-	fmt.Println(text)
-	fmt.Println(lettersCount)
+	//count := utf8.RuneCountInString(text)
+	//fmt.Println(count)
+
+	fmt.Println(countLetters(text))
 
 }
