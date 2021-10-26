@@ -2,22 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7cab539c-997b-427f-980c-8ee0d1a8bd41" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/encoded10.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded10.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded11.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded11.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded12.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded12.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded13.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded13.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded14.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded14.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded15.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded15.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded16.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded16.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded17.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded17.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded18.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded18.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded19.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded19.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded20.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded20.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded4.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded4.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/encoded5.txt" beforeDir="false" afterPath="$PROJECT_DIR$/encoded5.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lab2_res.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,6 +73,7 @@
       <workItem from="1635083609091" duration="2630000" />
       <workItem from="1635086695075" duration="1617000" />
       <workItem from="1635251497291" duration="792000" />
+      <workItem from="1635256019658" duration="1311000" />
     </task>
     <servers />
   </component>
