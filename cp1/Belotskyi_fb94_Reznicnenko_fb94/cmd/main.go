@@ -124,6 +124,41 @@ func lettersCount(text string) map[string]int{
 		"ю": 0,
 		"я": 0,
 	}
+
+	alphabet := []string{
+		"а",
+		"б",
+		"в",
+		"г",
+		"д",
+		"е",
+		"ж",
+		"з",
+		"и",
+		"й",
+		"к",
+		"л",
+		"м",
+		"н",
+		"о",
+		"п",
+		"р",
+		"с",
+		"т",
+		"у",
+		"ф",
+		"х",
+		"ц",
+		"ч",
+		"ш",
+		"щ",
+		"ы",
+		"ь",
+		"э",
+		"ю",
+		"я",
+	}
+
 	lettersArray := strings.Split(text, "")
 
 	for i, _ := range lettersArray{
@@ -244,5 +279,5 @@ func main(){
 	//fmt.Print(frequency(withOutSpaces))
 	arr := createBgrammsMatrix(withoutSpace)
 
-	fmt.Println(arr[len(arr)-1])
+	fmt.Println(arr)
 }
