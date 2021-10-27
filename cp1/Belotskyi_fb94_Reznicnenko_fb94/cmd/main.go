@@ -6,17 +6,57 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 	"unicode/utf8"
 )
 
+
+var alphabet = []string{
+"а",
+"б",
+"в",
+"г",
+"д",
+"е",
+"ж",
+"з",
+"a",
+"и",
+"й",
+"к",
+"л",
+"м",
+"н",
+"о",
+"п",
+"р",
+"с",
+"т",
+"у",
+"ф",
+"х",
+"ц",
+"ч",
+"ш",
+"щ",
+"ы",
+"ь",
+"э",
+"ю",
+"я",
+}
+
+
+//func for checking errors
 func check(err error){
 	if err != nil{
 		log.Fatal(err)
 	}
 }
 
-func replaceLettersSpaces(path string) string{
+//func that replace letter in text, deleting spaces and returns array of text letters
+func replaceLettersSpaces(path string) (string, string){
 	file, err := ioutil.ReadFile(path)
 	check(err)
 
@@ -43,15 +83,16 @@ func replaceLettersSpaces(path string) string{
 	_, err3 := f2.WriteString(withoutSpaces)
 	check(err3)
 
-	return withoutSpaces
+	return text2, withoutSpaces
 
 }
 
-func countLetters(text string) map[string]int{
+//func that counts each letter in text
+func lettersCount(text string) map[string]int{
 
 	lettersCount := map[string]int{
 
-		"a": 0,
+		"а": 0,
 		"б": 0,
 		"в": 0,
 		"г": 0,
@@ -83,39 +124,6 @@ func countLetters(text string) map[string]int{
 		"ю": 0,
 		"я": 0,
 	}
-	alphabet := []string{
-		"a",
-		"б",
-		"в",
-		"г",
-		"д",
-		"е",
-		"ж",
-		"з",
-		"и",
-		"й",
-		"к",
-		"л",
-		"м",
-		"н",
-		"о",
-		"п",
-		"р",
-		"с",
-		"т",
-		"у",
-		"ф",
-		"х",
-		"ц",
-		"ч",
-		"ш",
-		"щ",
-		"ы",
-		"ь",
-		"э",
-		"ю",
-		"я",
-	}
 	lettersArray := strings.Split(text, "")
 
 	for i, _ := range lettersArray{
@@ -126,16 +134,115 @@ func countLetters(text string) map[string]int{
 			}
 		}
 	}
+
+
 	return lettersCount
+}
+
+//structure for sorting array
+type kv struct{
+	Key string
+	Value float64
+}
+
+//func that count frequency and sorting frequency from high to low
+//and return sorted map(dictionary) frequency of letters
+func frequency(text string) map[string]float64 {
+
+	lettersFrequency := map[string]float64{
+
+		"а": 0,
+		"б": 0,
+		"в": 0,
+		"г": 0,
+		"д": 0,
+		"е": 0,
+		"ж": 0,
+		"з": 0,
+		"и": 0,
+		"й": 0,
+		"к": 0,
+		"л": 0,
+		"м": 0,
+		"н": 0,
+		"о": 0,
+		"п": 0,
+		"р": 0,
+		"с": 0,
+		"т": 0,
+		"у": 0,
+		"ф": 0,
+		"х": 0,
+		"ц": 0,
+		"ч": 0,
+		"ш": 0,
+		"щ": 0,
+		"ы": 0,
+		"ь": 0,
+		"э": 0,
+		"ю": 0,
+		"я": 0,
+	}
+
+	lettersCount(text)
+
+	letters := lettersCount(text)
+
+	count := utf8.RuneCountInString(text)
+
+	for i, _ := range lettersFrequency{
+		lettersFrequency[i] = float64(letters[i]) / float64(count)
+	}
+
+
+	var sortArr []kv
+	for k, v := range lettersFrequency{
+		sortArr = append(sortArr, kv{k, v})
+	}
+
+	sort.Slice(sortArr, func(i, j int) bool {
+		return sortArr[i].Value > sortArr[j].Value
+	})
+
+	sortedFrequency := map[string]float64{}
+
+	for _, kv := range sortArr {
+		//fmt.Printf("%s: %v\n", kv.Key, kv.Value)
+		sortedFrequency[kv.Key] = kv.Value
+	}
+
+	return sortedFrequency
+
+}
+
+func createBgrammsMatrix(text string) []string {
+
+	tempArray := strings.Split(text, "")
+
+	if len(tempArray) % 2 == 0 {
+		tempArray = append(tempArray, "ю")
+	}
+
+	var lettersArray []string
+	for i := 0; i <= len(tempArray) - 2; i++{
+		lettersArray = append(lettersArray, strings.ToLower(tempArray[i]) + strings.ToLower(tempArray[i+1]))
+	}
+	return lettersArray
+
 }
 
 func main(){
 
-	text := replaceLettersSpaces("../docs/text.txt")
+	_,withoutSpace := replaceLettersSpaces("../docs/text.txt")
 
-	count := utf8.RuneCountInString(text)
-	fmt.Println(count)
+	//count := utf8.RuneCountInString(withOutSpaces)
+	//fmt.Println(count)
+	//
+	//fmt.Println(lettersCount(WithSpaces))
 
-	fmt.Println(countLetters(text))
+	//fmt.Print(frequency(WithSpaces),"\n\n")
+	//fmt.Print(frequency(withOutSpaces))
+	arr := createBgrammsMatrix(withoutSpace)
 
+	fmt.Println(arr[len(arr)-1])
 }
