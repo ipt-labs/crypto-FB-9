@@ -33,13 +33,15 @@ def coindex(text):
     index /= (len(text)*(len(text)-1))
     return index
 
-def exp(text):
-    freq = Counter(text)
-    expv = 0
-    for i in freq:
-        freq[i] /= len(text)
-        expv += pow(freq[i],2)
-    return expv
+def findkey(text,expv):
+    r = keylen(text,expv)
+    key = []
+    for i in range(r):
+        y = []
+        for j in range(i, len(text), r):
+            y.append(text[j])
+        key.append(alph[ikey(y)])
+    return ''.join(i for i in key)
 
 def keylen(text, expv):
     rindex = []
@@ -54,11 +56,13 @@ def keylen(text, expv):
         rindex.append(abs(index - expv))
     return rindex.index(min(rindex))+2
 
-def freqletter(text):
+def exp(text):
     freq = Counter(text)
-    maxnum = max(Counter(text).values())
-    for key, value in freq.items():
-        if value == maxnum: return key
+    expv = 0
+    for i in freq:
+        freq[i] /= len(text)
+        expv += pow(freq[i],2)
+    return expv
 
 def ikey(text):
     freq_in_language = alph.index('о') # e - предпоследняя н,
@@ -66,15 +70,11 @@ def ikey(text):
     key = (freq_in_ctext-freq_in_language)%32
     return key
 
-def findkey(text,expv):
-    r = keylen(text,expv)
-    key = []
-    for i in range(r):
-        y = []
-        for j in range(i, len(text), r):
-            y.append(text[j])
-        key.append(alph[ikey(y)])
-    return ''.join(i for i in key)
+def freqletter(text):
+    freq = Counter(text)
+    maxnum = max(Counter(text).values())
+    for key, value in freq.items():
+        if value == maxnum: return key
 
 
 #for r in keys:
