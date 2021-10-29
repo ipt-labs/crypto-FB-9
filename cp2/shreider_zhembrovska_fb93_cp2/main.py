@@ -65,7 +65,7 @@ def exp(text):
     return expv
 
 def ikey(text):
-    freq_in_language = alph.index('о') # e - предпоследняя н,
+    freq_in_language = alph.index('о')
     freq_in_ctext = alph.index(freqletter(text))
     key = (freq_in_ctext-freq_in_language)%32
     return key
@@ -76,13 +76,17 @@ def freqletter(text):
     for key, value in freq.items():
         if value == maxnum: return key
 
+#print('||index of coincidence for plaintext||', coindex(plaintext), '\n')
+#print('||index of coincidence for encrypted texts||')
+#with open('encrypted_texts.txt', 'w') as f:
+#    for i in keys:
+#        f.write('|' + i + '|' + encryption(plaintext,i) + '\n')
+#        print(len(i), i, coindex(encryption(plaintext,i)))
 
-#for r in keys:
-#    print("r:",r,''.join(i for i in encryption(r)))
-#x = encryption(2)
-#y = indexcoinc(x)
-#for i in range(len(keys)):
-#    print(coindex(encryption(plaintext,keys[i])))
-key = 'возвращениеджинна'
-print(decryption(ciphertext,findkey(ciphertext,exp(plaintext))))
+#print("index of coincidence")
+#keylen(ciphertext,exp(plaintext))
 
+#print(findkey(ciphertext,exp(plaintext)))
+#key = 'возвращениеджинна'
+#with open('decrypted_text.txt', 'w') as f:
+#    f.write(decryption(ciphertext,key))
