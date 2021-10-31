@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"bufio"
 	"io/ioutil"
 	"log"
 	"os"
@@ -12,40 +12,7 @@ import (
 )
 
 
-var alphabet = []string{
-"а",
-"б",
-"в",
-"г",
-"д",
-"е",
-"ж",
-"з",
-"a",
-"и",
-"й",
-"к",
-"л",
-"м",
-"н",
-"о",
-"п",
-"р",
-"с",
-"т",
-"у",
-"ф",
-"х",
-"ц",
-"ч",
-"ш",
-"щ",
-"ы",
-"ь",
-"э",
-"ю",
-"я",
-}
+var alphabet = []string{"а", "б","в", "г", "д", "е", "ж","з", "a", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ы", "ь", "э", "ю", "я"}
 
 
 //func for checking errors
@@ -68,7 +35,9 @@ func replaceLettersSpaces(path string) (string, string){
 
 	f1, err := os.OpenFile("../docs/TextWithSpaces.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
-	f1.Truncate(0)
+
+	f1TruncateErr := f1.Truncate(0)
+	check(f1TruncateErr)
 
 	_, err2 := f1.WriteString(text2)
 	check(err2)
@@ -78,7 +47,9 @@ func replaceLettersSpaces(path string) (string, string){
 
 	f2, err := os.OpenFile("../docs/TextWithoutSpaces.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
-	f2.Truncate(0)
+
+	f2TruncateErr := f2.Truncate(0)
+	check(f2TruncateErr)
 
 	_, err3 := f2.WriteString(withoutSpaces)
 	check(err3)
@@ -125,39 +96,7 @@ func lettersCount(text string) map[string]int{
 		"я": 0,
 	}
 
-	alphabet := []string{
-		"а",
-		"б",
-		"в",
-		"г",
-		"д",
-		"е",
-		"ж",
-		"з",
-		"и",
-		"й",
-		"к",
-		"л",
-		"м",
-		"н",
-		"о",
-		"п",
-		"р",
-		"с",
-		"т",
-		"у",
-		"ф",
-		"х",
-		"ц",
-		"ч",
-		"ш",
-		"щ",
-		"ы",
-		"ь",
-		"э",
-		"ю",
-		"я",
-	}
+	alphabet := []string{"а", "б","в", "г", "д", "е", "ж","з", "a", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ы", "ь", "э", "ю", "я"}
 
 	lettersArray := strings.Split(text, "")
 
@@ -258,17 +197,38 @@ func createBgrammsMatrix(text string) []string {
 		tempArray = append(tempArray, "ю")
 	}
 
+	f, err := os.OpenFile("../docs/bgrams.txt", os.O_RDWR|os.O_CREATE, 0666)
+	check(err)
+
+	truncateErr := f.Truncate(0)
+	check(truncateErr)
+
+
+	dataWriter := bufio.NewWriter(f)
+
 	var lettersArray []string
 	for i := 0; i <= len(tempArray) - 2; i++{
 		lettersArray = append(lettersArray, strings.ToLower(tempArray[i]) + strings.ToLower(tempArray[i+1]))
 	}
-	return lettersArray
 
+	for _, data := range lettersArray{
+		_,_ = dataWriter.WriteString(data + " ")
+	}
+
+	err2 := dataWriter.Flush()
+	check(err2)
+
+	err3 := f.Close()
+	check(err3)
+
+	return lettersArray
 }
+
+
 
 func main(){
 
-	_,withoutSpace := replaceLettersSpaces("../docs/text.txt")
+
 
 	//count := utf8.RuneCountInString(withOutSpaces)
 	//fmt.Println(count)
@@ -277,7 +237,9 @@ func main(){
 
 	//fmt.Print(frequency(WithSpaces),"\n\n")
 	//fmt.Print(frequency(withOutSpaces))
-	arr := createBgrammsMatrix(withoutSpace)
 
-	fmt.Println(arr)
+	_, withOutSpaces :=  replaceLettersSpaces("../docs/text.txt")
+
+	createBgrammsMatrix(withOutSpaces)
+
 }
