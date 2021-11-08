@@ -1,11 +1,13 @@
 package main
 
 import (
-	"io"
+	"fmt"
+	"io/ioutil"
+	"regexp"
+
 	//"io/ioutil"
 	"log"
 	"os"
-	"regexp"
 	"sort"
 	"strings"
 	"unicode/utf8"
@@ -24,55 +26,17 @@ func check(err error){
 //func that replace letter in text, deleting spaces and returns array of text letters
 func replaceLettersSpaces(path string) (string, string){
 
-
-	f, err := os.Open(path)
+	fileBytes, err := ioutil.ReadFile(path)
 	check(err)
+	sliceData := strings.Split(string(fileBytes), "\n")
 
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-
-		}
-	}(f)
-
-	buf := make([]byte, 1024)
-
-
-	var text []string
-
-	for {
-		n, err2 := f.Read(buf)
-		if err2 == io.EOF{
-			break
-		}
-		check(err2)
-		if n > 0 {
-			//fmt.Println(string(buf[:n]))
-			text = append(text, string(buf[:n]))
-		}
-	}
-
-	//fmt.Println(text[0])
-
-	//for i:=0; i < len(text); i++{
-	//	for j:=0; j < len(text[i]); j++{
-	//		if text[j] == "ё"{
-	//			fmt.Println(text[j])
-	//			text[j] = "е"
-	//		}
-	//		if text[j] == "ъ"{
-	//			text[j] = "ь"
-	//		}
-	//	}
-	//}
-
-
+	//fmt.Println(sliceData)
 
 	var re = regexp.MustCompile(`ё`)
-	text1 := re.ReplaceAllString(string(buf), `е`)
+	tempText := re.ReplaceAllString(sliceData[0], `е`)
 
 	re = regexp.MustCompile(`ъ`)
-	text2 := re.ReplaceAllString(string(text1), `ь`)
+	withSpaces := re.ReplaceAllString(string(tempText), `ь`)
 
 	f1, err := os.OpenFile("../docs/TextWithSpaces.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
@@ -80,14 +44,14 @@ func replaceLettersSpaces(path string) (string, string){
 	f1TruncateErr := f1.Truncate(0)
 	check(f1TruncateErr)
 
-	_, err2 := f1.WriteString(text2)
-	check(err2)
+	_, err = f1.WriteString(withSpaces)
+	check(err)
 
 	spaces := regexp.MustCompile(` `)
-	withoutSpaces := spaces.ReplaceAllString(string(text2), ``)
+	withoutSpaces := spaces.ReplaceAllString(string(withSpaces), ``)
 
-	f2, err := os.OpenFile("../docs/TextWithoutSpaces.txt", os.O_RDWR|os.O_CREATE, 0666)
-	check(err)
+	f2, f2Err := os.OpenFile("../docs/TextWithoutSpaces.txt", os.O_RDWR|os.O_CREATE, 0666)
+	check(f2Err)
 
 	f2TruncateErr := f2.Truncate(0)
 	check(f2TruncateErr)
@@ -95,7 +59,7 @@ func replaceLettersSpaces(path string) (string, string){
 	_, err3 := f2.WriteString(withoutSpaces)
 	check(err3)
 
-	return text2, withoutSpaces
+	return withSpaces, withoutSpaces
 
 }
 
@@ -103,7 +67,6 @@ func replaceLettersSpaces(path string) (string, string){
 func lettersCount(text string) map[string]int{
 
 	lettersCount := map[string]int{
-
 		"а": 0, "б": 0, "в": 0, "г": 0, "д": 0, "е": 0, "ж": 0, "з": 0, "и": 0, "й": 0, "к": 0, "л": 0, "м": 0, "н": 0, "о": 0, "п": 0, "р": 0, "с": 0, "т": 0, "у": 0, "ф": 0, "х": 0, "ц": 0, "ч": 0, "ш": 0, "щ": 0, "ы": 0, "ь": 0, "э": 0, "ю": 0, "я": 0,
 	}
 
@@ -120,7 +83,6 @@ func lettersCount(text string) map[string]int{
 		}
 	}
 
-
 	return lettersCount
 }
 
@@ -132,7 +94,7 @@ type kv struct{
 
 //func that count frequency and sorting frequency from high to low
 //and return sorted map(dictionary) frequency of letters
-func frequency(text string) map[string]float64 {
+func letterFrequency(text string) map[string]float64 {
 
 	lettersFrequency := map[string]float64{
 		"а": 0, "б": 0, "в": 0, "г": 0, "д": 0, "е": 0, "ж": 0, "з": 0, "и": 0, "й": 0, "к": 0, "л": 0, "м": 0, "н": 0, "о": 0, "п": 0, "р": 0, "с": 0, "т": 0, "у": 0, "ф": 0, "х": 0, "ц": 0, "ч": 0, "ш": 0, "щ": 0, "ы": 0, "ь": 0, "э": 0, "ю": 0, "я": 0,
@@ -160,13 +122,20 @@ func frequency(text string) map[string]float64 {
 
 	sortedFrequency := map[string]float64{}
 
+	file, err := os.Create("../docs/lettersFrequency")
+	check(err)
+	defer func(file *os.File) {
+		err := file.Close()
+		check(err)
+	}(file)
+
 	for _, kv := range sortArr {
-		//fmt.Printf("%s: %v\n", kv.Key, kv.Value)
+		fmt.Printf("%s: %v\n", kv.Key, kv.Value)
 		sortedFrequency[kv.Key] = kv.Value
 	}
 
-	return sortedFrequency
 
+	return sortedFrequency
 }
 
 func createCountBgrammsMatrix(text string) []string {
@@ -209,9 +178,6 @@ func createCountBgrammsMatrix(text string) []string {
 		}
 	}
 
-	//fmt.Println(crossBgrammsCount, "\n")
-	//fmt.Println(UncrossBgrammsCount)
-
 	CrossF, err := os.OpenFile("../docs/crossedBgrams.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
 
@@ -240,31 +206,16 @@ func createCountBgrammsMatrix(text string) []string {
 			check(err)
 		}
 
-	//defer func(CrossF *os.File) {
-	//	err := CrossF.Close()
-	//	check(err)
-	//}(CrossF)
-	//defer func(CrossF *os.File) {
-	//	err := CrossF.Close()
-	//	check(err)
-	//}(CrossF)
-
 
 	return crossedBigrmas
 }
 
 func main(){
 
-	//count := utf8.RuneCountInString(withOutSpaces)
-	//fmt.Println(count)
-	//
-	//fmt.Println(lettersCount(WithSpaces))
-
-	//fmt.Print(frequency(WithSpaces),"\n\n")
-	//fmt.Print(frequency(withOutSpaces))
-
 	_, withOutSpaces :=  replaceLettersSpaces("../docs/text.txt")
 
 	createCountBgrammsMatrix(withOutSpaces)
+
+	letterFrequency(withOutSpaces)
 
 }
