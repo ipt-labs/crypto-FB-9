@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"io/ioutil"
+	"io"
+	//"io/ioutil"
 	"log"
 	"os"
 	"regexp"
@@ -11,24 +11,65 @@ import (
 	"unicode/utf8"
 )
 
-
 var alphabet = []string{"а", "б","в", "г", "д", "е", "ж","з", "a", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ы", "ь", "э", "ю", "я"}
-
 
 //func for checking errors
 func check(err error){
 	if err != nil{
 		log.Fatal(err)
+
 	}
 }
 
 //func that replace letter in text, deleting spaces and returns array of text letters
 func replaceLettersSpaces(path string) (string, string){
-	file, err := ioutil.ReadFile(path)
+
+
+	f, err := os.Open(path)
 	check(err)
 
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+
+		}
+	}(f)
+
+	buf := make([]byte, 1024)
+
+
+	var text []string
+
+	for {
+		n, err2 := f.Read(buf)
+		if err2 == io.EOF{
+			break
+		}
+		check(err2)
+		if n > 0 {
+			//fmt.Println(string(buf[:n]))
+			text = append(text, string(buf[:n]))
+		}
+	}
+
+	//fmt.Println(text[0])
+
+	//for i:=0; i < len(text); i++{
+	//	for j:=0; j < len(text[i]); j++{
+	//		if text[j] == "ё"{
+	//			fmt.Println(text[j])
+	//			text[j] = "е"
+	//		}
+	//		if text[j] == "ъ"{
+	//			text[j] = "ь"
+	//		}
+	//	}
+	//}
+
+
+
 	var re = regexp.MustCompile(`ё`)
-	text1 := re.ReplaceAllString(string(file), `е`)
+	text1 := re.ReplaceAllString(string(buf), `е`)
 
 	re = regexp.MustCompile(`ъ`)
 	text2 := re.ReplaceAllString(string(text1), `ь`)
@@ -168,8 +209,8 @@ func createCountBgrammsMatrix(text string) []string {
 		}
 	}
 
-	fmt.Println(crossBgrammsCount, "\n")
-	fmt.Println(UncrossBgrammsCount)
+	//fmt.Println(crossBgrammsCount, "\n")
+	//fmt.Println(UncrossBgrammsCount)
 
 	CrossF, err := os.OpenFile("../docs/crossedBgrams.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
