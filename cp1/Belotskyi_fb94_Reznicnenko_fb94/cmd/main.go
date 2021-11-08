@@ -116,11 +116,21 @@ func letterFrequency(text string) map[string]float64 {
 		sortArr = append(sortArr, kv{k, v})
 	}
 
+	sortedFrequency := make(map[string]float64)
+
 	sort.Slice(sortArr, func(i, j int) bool {
 		return sortArr[i].Value > sortArr[j].Value
 	})
 
-	sortedFrequency := map[string]float64{}
+
+	for i:=0; i<len(sortArr);i++{
+		tempKey := sortArr[i].Key
+		tempVal := sortArr[i].Value
+
+		fmt.Println(tempKey, ": ", tempVal)
+
+		sortedFrequency[sortArr[i].Key] = sortArr[i].Value
+	}
 
 	file, err := os.Create("../docs/lettersFrequency")
 	check(err)
@@ -129,10 +139,13 @@ func letterFrequency(text string) map[string]float64 {
 		check(err)
 	}(file)
 
-	for _, kv := range sortArr {
-		fmt.Printf("%s: %v\n", kv.Key, kv.Value)
-		sortedFrequency[kv.Key] = kv.Value
-	}
+	//for _, kv := range sortArr {
+	//	//sortedFrequency[kv.Key] = kv.Value
+	//	//fmt.Printf("%s: %v\n", kv.Key, kv.Value)
+	//}
+
+
+	fmt.Println(sortedFrequency)
 
 
 	return sortedFrequency
