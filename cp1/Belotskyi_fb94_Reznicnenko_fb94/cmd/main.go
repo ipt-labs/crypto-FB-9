@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"regexp"
+	"strconv"
 
-	//"io/ioutil"
 	"log"
 	"os"
 	"sort"
@@ -15,6 +15,7 @@ import (
 
 var alphabet = []string{"а", "б","в", "г", "д", "е", "ж","з", "a", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ы", "ь", "э", "ю", "я"}
 
+var textPath string = "../docs/text.txt"
 //func for checking errors
 func check(err error){
 	if err != nil{
@@ -29,8 +30,6 @@ func replaceLettersSpaces(path string) (string, string){
 	fileBytes, err := ioutil.ReadFile(path)
 	check(err)
 	sliceData := strings.Split(string(fileBytes), "\n")
-
-	//fmt.Println(sliceData)
 
 	var re = regexp.MustCompile(`ё`)
 	tempText := re.ReplaceAllString(sliceData[0], `е`)
@@ -58,6 +57,9 @@ func replaceLettersSpaces(path string) (string, string){
 
 	_, err3 := f2.WriteString(withoutSpaces)
 	check(err3)
+	//
+	//fmt.Println(withSpaces, "\n")
+	//fmt.Println(withoutSpaces, "\n")
 
 	return withSpaces, withoutSpaces
 
@@ -69,8 +71,6 @@ func lettersCount(text string) map[string]int{
 	lettersCount := map[string]int{
 		"а": 0, "б": 0, "в": 0, "г": 0, "д": 0, "е": 0, "ж": 0, "з": 0, "и": 0, "й": 0, "к": 0, "л": 0, "м": 0, "н": 0, "о": 0, "п": 0, "р": 0, "с": 0, "т": 0, "у": 0, "ф": 0, "х": 0, "ц": 0, "ч": 0, "ш": 0, "щ": 0, "ы": 0, "ь": 0, "э": 0, "ю": 0, "я": 0,
 	}
-
-	alphabet := []string{"а", "б","в", "г", "д", "е", "ж","з", "a", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ы", "ь", "э", "ю", "я"}
 
 	lettersArray := strings.Split(text, "")
 
@@ -94,7 +94,7 @@ type kv struct{
 
 //func that count frequency and sorting frequency from high to low
 //and return sorted map(dictionary) frequency of letters
-func letterFrequency(text string) map[string]float64 {
+func letterFrequency(text string) {
 
 	lettersFrequency := map[string]float64{
 		"а": 0, "б": 0, "в": 0, "г": 0, "д": 0, "е": 0, "ж": 0, "з": 0, "и": 0, "й": 0, "к": 0, "л": 0, "м": 0, "н": 0, "о": 0, "п": 0, "р": 0, "с": 0, "т": 0, "у": 0, "ф": 0, "х": 0, "ц": 0, "ч": 0, "ш": 0, "щ": 0, "ы": 0, "ь": 0, "э": 0, "ю": 0, "я": 0,
@@ -105,32 +105,20 @@ func letterFrequency(text string) map[string]float64 {
 	letters := lettersCount(text)
 
 	count := utf8.RuneCountInString(text)
+	fmt.Println(count)
 
 	for i, _ := range lettersFrequency{
 		lettersFrequency[i] = float64(letters[i]) / float64(count)
 	}
-
 
 	var sortArr []kv
 	for k, v := range lettersFrequency{
 		sortArr = append(sortArr, kv{k, v})
 	}
 
-	sortedFrequency := make(map[string]float64)
-
 	sort.Slice(sortArr, func(i, j int) bool {
 		return sortArr[i].Value > sortArr[j].Value
 	})
-
-
-	for i:=0; i<len(sortArr);i++{
-		tempKey := sortArr[i].Key
-		tempVal := sortArr[i].Value
-
-		fmt.Println(tempKey, ": ", tempVal)
-
-		sortedFrequency[sortArr[i].Key] = sortArr[i].Value
-	}
 
 	file, err := os.Create("../docs/lettersFrequency")
 	check(err)
@@ -139,16 +127,18 @@ func letterFrequency(text string) map[string]float64 {
 		check(err)
 	}(file)
 
-	//for _, kv := range sortArr {
-	//	//sortedFrequency[kv.Key] = kv.Value
-	//	//fmt.Printf("%s: %v\n", kv.Key, kv.Value)
-	//}
+	var frequencyToFile string
 
+	for i:=0; i<len(sortArr);i++{
+		tempKey := sortArr[i].Key
+		tempVal := strconv.FormatFloat(sortArr[i].Value, 'E', -1, 64)
 
-	fmt.Println(sortedFrequency)
+		frequencyToFile = tempKey + ": " + tempVal + "\n"
 
+		_, err := file.WriteString(frequencyToFile)
+		check(err)
 
-	return sortedFrequency
+	}
 }
 
 func createCountBgrammsMatrix(text string) []string {
@@ -194,8 +184,6 @@ func createCountBgrammsMatrix(text string) []string {
 	CrossF, err := os.OpenFile("../docs/crossedBgrams.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
 
-
-
 	UncrossF, err := os.OpenFile("../docs/UnCrossedBgrams.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
 
@@ -225,10 +213,12 @@ func createCountBgrammsMatrix(text string) []string {
 
 func main(){
 
-	_, withOutSpaces :=  replaceLettersSpaces("../docs/text.txt")
+	_, withOutSpace :=  replaceLettersSpaces(textPath)
 
-	createCountBgrammsMatrix(withOutSpaces)
+	createCountBgrammsMatrix(withOutSpace)
 
-	letterFrequency(withOutSpaces)
+	letterFrequency(withOutSpace)
+
+	createCountBgrammsMatrix(withOutSpace)
 
 }
