@@ -2,7 +2,6 @@ from array import *
 from math import*
  
  
-#file_source = "..\\..\\f2.txt"
 file_source = "..\\file1.txt"
 file_noSpace = "..\\file2_noSpace.txt"
 file_Space = "..\\file3_Space.txt"
@@ -66,9 +65,10 @@ for c in thisset:
     arr.append(c)
  
 arr.sort()
+
 for i in range(0,len(arr)):
-    k = (cont_noSpace.count(arr[i]))/len(cont_noSpace)
-    strochka1 = arr[i] + "\t " +str(cont_noSpace.count(arr[i])) + "\t " +  str(k)
+    probability = (cont_noSpace.count(arr[i]))/len(cont_noSpace)
+    strochka1 = arr[i] + "\t " +str(cont_noSpace.count(arr[i])) + "\t " +  str(probability)
     file4 = open(file_probability_noSpace, "a")
     file4.write(strochka1 + '\n')
     file4.close()
@@ -124,11 +124,10 @@ for char in cont_Space:
 for c in thisset:
     arr.append(c)
  
- 
 arr.sort()
 for i in range(0,len(arr)):
-    k = (cont_Space.count(arr[i]))/len(cont_Space)
-    strochka2 = arr[i] + "\t " +str(cont_Space.count(arr[i])) + "\t " +  str(k)
+    probability = (cont_Space.count(arr[i]))/len(cont_Space)
+    strochka2 = arr[i] + "\t " +str(cont_Space.count(arr[i])) + "\t " +  str(probability)
     file5 = open(file_probability_Space, "a")
     file5.write(strochka2 + '\n')
     file5.close()
@@ -144,11 +143,10 @@ file2 = open(file_noSpace, "r")
 cont_noSpace = file2.read()
  
 arr1 = []
-j = 0
 for i in range(0,len(cont_noSpace)-1):
     char = cont_noSpace[i] + cont_noSpace[i+1]
     arr1.append(char)
-    j+=1
+
 arr = []
 thisset = set()
 for char in arr1:
@@ -156,14 +154,18 @@ for char in arr1:
 for c in thisset:
     arr.append(c)
 arr.sort()
+
+sumOfCountOfBigrams = 0
+for i in range(0, len(arr)):    # тут мы считаем сумму количества каждой биграммы
+    sumOfCountOfBigrams+=cont_noSpace.count(arr[i])
+
 for i in range(0, len(arr)):
     
-    k = (cont_noSpace.count(arr[i]))/j
-    strochka3 = arr[i] + "\t " +str(cont_noSpace.count(arr[i])) + "\t " +  str(k)
+    probability = (cont_noSpace.count(arr[i]))/sumOfCountOfBigrams
+    strochka3 = arr[i] + "\t " +str(cont_noSpace.count(arr[i])) + "\t " +  str(probability)
     file6 = open(file_bigramms_noSpace_1, "a")
     file6.write(strochka3 + '\n')
     file6.close()
-
 file2.close()
  
  
@@ -176,27 +178,28 @@ cont_noSpace = file2.read()
  
 arr1 = []
  
-j = 0
 i = 0
 while i < len(cont_noSpace)-1:
     char = cont_noSpace[i] + cont_noSpace[i+1] 
     arr1.append(char)
     i+=2
-    j+=2
- 
- 
+
 arr = []
 thisset = set()
 for char in arr1:
     thisset.add(char) 
 for c in thisset:
     arr.append(c)
- 
+
 arr.sort()
+
+sumOfCountOfBigrams = 0
+for i in range(0, len(arr)):    # тут мы считаем сумму количества каждой биграммы
+    sumOfCountOfBigrams+=cont_noSpace.count(arr[i])
+
 for i in range(0, len(arr)):
-    
-    k = (cont_noSpace.count(arr[i]))/j
-    strochka3 = arr[i] + "\t " +str(cont_noSpace.count(arr[i])) + "\t " +  str(k)
+    probability = (cont_noSpace.count(arr[i]))/sumOfCountOfBigrams  # вероятность
+    strochka3 = arr[i] + "\t " +str(cont_noSpace.count(arr[i])) + "\t " +  str(probability)
     file7 = open(file_bigramms_noSpace_2, "a")
     file7.write(strochka3 + '\n')
     file7.close()
@@ -212,11 +215,10 @@ file3 = open(file_Space, "r")
 cont_Space = file3.read()
  
 arr1 = []
-j = 0
 for i in range(0,len(cont_Space)-1):
     char = cont_Space[i] + cont_Space[i+1]
     arr1.append(char)
-    j+=1
+
 arr = []
 thisset = set()
 for char in arr1:
@@ -226,10 +228,15 @@ for c in thisset:
  
 arr.sort()
 
+
+sumOfCountOfBigrams = 0
+for i in range(0, len(arr)):    # тут мы считаем сумму количества каждой биграммы
+    sumOfCountOfBigrams+=cont_Space.count(arr[i])
+
 for i in range(0, len(arr)):
     
-    k = (cont_Space.count(arr[i]))/j
-    strochka3 = arr[i] + "\t " +str(cont_Space.count(arr[i])) + "\t " +  str(k)
+    probability = (cont_Space.count(arr[i]))/sumOfCountOfBigrams
+    strochka3 = arr[i] + "\t " +str(cont_Space.count(arr[i])) + "\t " +  str(probability)
     file8 = open(file_bigramms_Space_1, "a")
     file8.write(strochka3 + '\n')
     file8.close()
@@ -245,13 +252,11 @@ cont_Space = file3.read()
  
 arr1 = []
  
-j = 0
 i = 0
 while i < len(cont_Space)-1:
     char = cont_Space[i] + cont_Space[i+1]
     arr1.append(char)
     i+=2
-    j+=2
  
 arr = []
 thisset = set()
@@ -261,12 +266,14 @@ for c in thisset:
     arr.append(c)
  
 arr.sort()
+sumOfCountOfBigrams = 0
+for i in range(0, len(arr)):    # тут мы считаем сумму количества каждой биграммы
+    sumOfCountOfBigrams += cont_Space.count(arr[i])
+
 for i in range(0, len(arr)):
-    
-    k = (cont_Space.count(arr[i]))/j
-    strochka3 = arr[i] + "\t " +str(cont_Space.count(arr[i])) + "\t " +  str(k)
+    probability = (cont_Space.count(arr[i]))/sumOfCountOfBigrams  # вероятность
+    strochka3 = arr[i] + "\t " +str(cont_Space.count(arr[i])) + "\t " +  str(probability)
     file9 = open(file_bigramms_Space_2, "a")
     file9.write(strochka3 + '\n')
     file9.close()
- 
 file3.close()
