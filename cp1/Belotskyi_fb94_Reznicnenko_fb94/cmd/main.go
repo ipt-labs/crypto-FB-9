@@ -112,7 +112,7 @@ func letterFrequency(text string) {
 	letters := lettersCount(text)
 
 	count := utf8.RuneCountInString(text)
-	fmt.Println(count)
+	//fmt.Println(count)
 
 	for i, _ := range lettersFrequency {
 		lettersFrequency[i] = float64(letters[i]) / float64(count)
@@ -141,7 +141,7 @@ func letterFrequency(text string) {
 	for i := 0; i < len(sortArr); i++ {
 		tempKey := sortArr[i].Key
 
-		entropy += -sortArr[i].Value * math.Log2(sortArr[i].Value)
+		entropy += -sortArr[i].Value * math.Log(sortArr[i].Value)
 
 		tempVal := strconv.FormatFloat(sortArr[i].Value, 'E', -1, 64)
 
@@ -161,7 +161,7 @@ func createCountBgrammsMatrix(text string) []string {
 
 	tempArray := strings.Split(text, "")
 
-	if len(tempArray)%2 == 0 {
+	if len(tempArray)%2 != 0 {
 
 		tempArray = append(tempArray, "ю")
 	}
@@ -236,9 +236,18 @@ func createCountBgrammsMatrix(text string) []string {
 	lenText := len(text)
 	floatValText := float64(lenText)
 
+	var entCrossed float64
+	var entUnCrossed float64
+
+	CrossBgramFreq := map[string]float64{}
+
 	for key, value := range crossBgrammsCount {
 
+		entCrossed += -float64(value) * math.Log2(float64(value))
+
 		var floatVal float64 = float64(value) / (floatValText - 1)
+
+		CrossBgramFreq[key] = floatVal
 
 		strVal := strconv.FormatFloat(floatVal, 'f', 6, 64)
 
@@ -246,15 +255,32 @@ func createCountBgrammsMatrix(text string) []string {
 		check(err)
 	}
 
+	_, err = CrossFreqF.WriteString("\nEntropy: " + strconv.FormatFloat(entCrossed, 'f', 6, 64) + "\n")
+	check(err)
+
+	UncrBgramArr := []float64{}
+
 	for key, value := range UncrossBgrammsCount {
 
 		var floatVal float64 = float64(value) / 2
 
 		strVal := strconv.FormatFloat(floatVal, 'f', 6, 64)
 
+		UncrBgramArr = append(UncrBgramArr, floatVal)
+
 		_, err := UncrossFreqF.WriteString(key + ": " + strVal + "\n")
 		check(err)
 	}
+
+	for i:=0; i < len(UncrBgramArr); i++ {
+		entUnCrossed += -UncrBgramArr[i] * math.Log(UncrBgramArr[i])
+	}
+
+	fmt.Println(UncrBgramArr)
+	fmt.Println(len(UncrBgramArr))
+
+	_, err = UncrossFreqF.WriteString("\nEntropy: " + strconv.FormatFloat(entUnCrossed, 'f', 6, 64) + "\n")
+	check(err)
 
 	return crossedBigrmas
 }
@@ -263,7 +289,7 @@ func main() {
 
 	_, withOutSpace := replaceLettersSpaces(textPath)
 
-	createCountBgrammsMatrix(withOutSpace)
+	lettersCount(withOutSpace)
 
 	letterFrequency(withOutSpace)
 
