@@ -90,7 +90,7 @@ func lettersCountFreq(text string) (map[string]int, []string) {
 		lettersFreq[key] = float64(val) / float64(lettersInText)
 	}
 
-	for _, val := range lettersFreq{
+	for _, val := range lettersFreq {
 		alphabetEntropy += -val * math.Log2(val)
 	}
 
@@ -117,62 +117,55 @@ func bgrammsCount(text string) (map[string]float64, map[string]float64) {
 	crossedBgrammCount := map[string]float64{}
 	unCrossedBgrammCount := map[string]float64{}
 	textArray := strings.Split(text, "")
-	fmt.Println(len(textArray))
 
-	if len(textArray) % 2 != 0{
+	if len(textArray)%2 != 0 {
 		textArray = append(textArray, "ю")
 	}
 
-	fmt.Println(len(textArray))
-
 	for i := 0; i < len(textArray)-1; i++ {
-		if textArray[i] == " " {
-			i++
-		} else {
-			crossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
-		}
+		crossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
 	}
 
-	for i := 0; i < len(textArray)-2; i += 2 {
-		unCrossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
+	for i := 0; i < len(textArray)-2; i++ {
+		unCrossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+2])]++
 	}
 
 	return crossedBgrammCount, unCrossedBgrammCount
 }
 
-func bgrammsFreq(cross map[string]int, unCross map[string]int) (map[string]float64, map[string]float64){
+func bgrammsFreq(cross map[string]int, unCross map[string]int) (map[string]float64, map[string]float64) {
 
 	crossFreq := map[string]float64{}
 	unCrossFreq := map[string]float64{}
 
-	for key, val := range cross{
-		crossFreq[key] = float64(val) / float64(textLen - 1)
+	for key, val := range cross {
+		crossFreq[key] = float64(val) / float64(textLen-1)
 	}
 
-	for key, val := range unCross{
+	for key, val := range unCross {
 		unCrossFreq[key] = float64(val) / 2
 	}
 
 	return crossFreq, unCrossFreq
 }
 
-func entropy(freq map[string]float64) float64{
+func entropy(freq map[string]float64) float64 {
 
 	var entropy float64 = 0
-	//fmt.Println(len(freq))
-
-	for _, val := range freq{
+	for _, val := range freq {
 		entropy += -val * math.Log2(val)
 	}
-
 	return entropy
 }
 
 func main() {
-	_, text := replaceLetters()
+	text,_ := replaceLetters()
 	lettersCountFreq(text)
-	fmt.Println(alphabetEntropy)
+	//fmt.Println(alphabetEntropy)
 	test1, test2 := bgrammsCount(text)
-	fmt.Println(entropy(test1))
-	fmt.Println(entropy(test2))
+	fmt.Println("Alphabet entropy: ")
+	fmt.Println(alphabetEntropy)
+	fmt.Println("CrossBgramm & UnCrossed entropy: ")
+	fmt.Println(entropy(test1) / 2)
+	fmt.Println(entropy(test2) / 2)
 }
