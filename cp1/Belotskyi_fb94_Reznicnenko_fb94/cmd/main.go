@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
@@ -13,11 +14,11 @@ import (
 
 var alphabet = []string{"а", "б", "в", "г", "д", "е", "ж", "з", "a", "и", "й", "к", "л", "м", "н", "о", "п", "р", "с", "т", "у", "ф", "х", "ц", "ч", "ш", "щ", "ы", "ь", "э", "ю", "я"}
 var textLen int
+var alphabetEntropy float64
 
 func check(err error) {
 	if err != nil {
 		log.Fatal(err)
-
 	}
 }
 
@@ -49,7 +50,6 @@ func replaceLetters() (string, string) {
 	textLen = len(noSpace)
 
 	return clearText, noSpace
-
 }
 
 //struct for sorting letters frequency
@@ -70,7 +70,6 @@ func lettersCountFreq(text string) (map[string]int, []string) {
 
 	lettersCount := map[string]int{}
 	lettersFreq := map[string]float64{}
-
 	textArray := strings.Split(text, "")
 
 	for i, _ := range textArray {
@@ -89,6 +88,10 @@ func lettersCountFreq(text string) (map[string]int, []string) {
 
 	for key, val := range lettersCount {
 		lettersFreq[key] = float64(val) / float64(lettersInText)
+	}
+
+	for _, val := range lettersFreq{
+		alphabetEntropy += -val * math.Log2(val)
 	}
 
 	p := make(PairList, len(lettersFreq))
@@ -113,8 +116,14 @@ func bgrammsCount(text string) (map[string]float64, map[string]float64) {
 
 	crossedBgrammCount := map[string]float64{}
 	unCrossedBgrammCount := map[string]float64{}
-
 	textArray := strings.Split(text, "")
+	fmt.Println(len(textArray))
+
+	if len(textArray) % 2 != 0{
+		textArray = append(textArray, "ю")
+	}
+
+	fmt.Println(len(textArray))
 
 	for i := 0; i < len(textArray)-1; i++ {
 		if textArray[i] == " " {
@@ -122,7 +131,6 @@ func bgrammsCount(text string) (map[string]float64, map[string]float64) {
 		} else {
 			crossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
 		}
-
 	}
 
 	for i := 0; i < len(textArray)-2; i += 2 {
@@ -130,7 +138,6 @@ func bgrammsCount(text string) (map[string]float64, map[string]float64) {
 	}
 
 	return crossedBgrammCount, unCrossedBgrammCount
-
 }
 
 func bgrammsFreq(cross map[string]int, unCross map[string]int) (map[string]float64, map[string]float64){
@@ -159,15 +166,13 @@ func entropy(freq map[string]float64) float64{
 	}
 
 	return entropy
-
 }
 
 func main() {
-	text, _ := replaceLetters()
+	_, text := replaceLetters()
+	lettersCountFreq(text)
+	fmt.Println(alphabetEntropy)
 	test1, test2 := bgrammsCount(text)
-	entropy(test1)
-	entropy(test2)
-
-	//fmt.Println(text)
-
+	fmt.Println(entropy(test1))
+	fmt.Println(entropy(test2))
 }
