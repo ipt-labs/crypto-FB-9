@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"math"
@@ -23,20 +22,31 @@ func check(err error) {
 }
 
 func openReportFile() (f *os.File) {
-	f, err := os.OpenFile("..docs/report.txt", os.O_RDWR|os.O_CREATE, 0666)
+	f, err := os.OpenFile("../docs/report.txt", os.O_RDWR|os.O_CREATE, 0666)
 	check(err)
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-
-		}
-	}(f)
-
 	return f
 }
 
+func writeMapToFile(text string, dict map[string]float64, f *os.File){
+
+	_, err := f.WriteString(text)
+	check(err)
+	for key, val := range dict{
+		_, err = f.WriteString(key + ": " + strconv.FormatFloat(val, 'f', 6, 64) + "\n")
+	}
+}
+
+func writeArrayToFile(text string, arr[]string, f *os.File){
+
+	_, err := f.WriteString(text)
+	check(err)
+	for i:=0; i < len(arr); i++{
+		_, err = f.WriteString(arr[i] + "\n")
+	}
+}
+
 func replaceLetters() (string, string) {
-	textFile, err := ioutil.ReadFile("../docs/text.txt")
+	textFile, err := ioutil.ReadFile("../docs/test.txt")
 	check(err)
 
 	clearText := string(textFile)
@@ -66,9 +76,9 @@ func (p PairList) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 func (p PairList) Less(i, j int) bool { return p[i].Value < p[j].Value }
 
 //counting letters count and frequency
-func lettersCountFreq(text string) (map[string]int, []string) {
+func lettersCountFreq(text string) (map[string]float64, []string) {
 
-	lettersCount := map[string]int{}
+	lettersCount := map[string]float64{}
 	lettersFreq := map[string]float64{}
 	textArray := strings.Split(text, "")
 
@@ -80,14 +90,14 @@ func lettersCountFreq(text string) (map[string]int, []string) {
 		}
 	}
 
-	var lettersInText int
+	var lettersInText float64
 
 	for _, val := range lettersCount {
 		lettersInText += val
 	}
 
 	for key, val := range lettersCount {
-		lettersFreq[key] = float64(val) / float64(lettersInText)
+		lettersFreq[key] = val / lettersInText
 	}
 
 	for _, val := range lettersFreq {
@@ -126,24 +136,24 @@ func bgrammsCount(text string) (map[string]float64, map[string]float64) {
 		crossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
 	}
 
-	for i := 0; i < len(textArray)-2; i++ {
+	for i := 0; i < len(textArray)-2; i += 2 {
 		unCrossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+2])]++
 	}
 
 	return crossedBgrammCount, unCrossedBgrammCount
 }
 
-func bgrammsFreq(cross map[string]int, unCross map[string]int) (map[string]float64, map[string]float64) {
+func bgrammsFreq(cross map[string]float64, unCross map[string]float64) (map[string]float64, map[string]float64) {
 
 	crossFreq := map[string]float64{}
 	unCrossFreq := map[string]float64{}
 
 	for key, val := range cross {
-		crossFreq[key] = float64(val) / float64(textLen-1)
+		crossFreq[key] = val / float64(textLen-1)
 	}
 
 	for key, val := range unCross {
-		unCrossFreq[key] = float64(val) / 2
+		unCrossFreq[key] = val / 2
 	}
 
 	return crossFreq, unCrossFreq
@@ -159,13 +169,102 @@ func entropy(freq map[string]float64) float64 {
 }
 
 func main() {
-	text,_ := replaceLetters()
-	lettersCountFreq(text)
-	//fmt.Println(alphabetEntropy)
-	test1, test2 := bgrammsCount(text)
-	fmt.Println("Alphabet entropy: ")
-	fmt.Println(alphabetEntropy)
-	fmt.Println("CrossBgramm & UnCrossed entropy: ")
-	fmt.Println(entropy(test1) / 2)
-	fmt.Println(entropy(test2) / 2)
+
+	reportF := openReportFile()
+	truncErr := reportF.Truncate(0)
+	check(truncErr)
+
+	textSpaces, textNoSpaces := replaceLetters()
+	lettersCountSpace, lettersFreqSpace := lettersCountFreq(textSpaces)
+	_, err := reportF.WriteString("Letters with spaces entropy: " + strconv.FormatFloat(alphabetEntropy, 'f', 6, 64) + "\n")
+	check(err)
+
+	lettersCountNoSpace, lettersFreqNoSpace := lettersCountFreq(textNoSpaces)
+	_, err = reportF.WriteString("Letters without spaces entropy: " + strconv.FormatFloat(alphabetEntropy, 'f', 6, 64) + "\n")
+	check(err)
+
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Letters with spaces count: \n", lettersCountSpace, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Letters without spaces count: \n", lettersCountNoSpace, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeArrayToFile("Letters frequency with spaces: \n", lettersFreqSpace, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeArrayToFile("Letters frequency without spaces: \n", lettersFreqNoSpace, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	crossedBgramssSpaces, unCrossedBgramssSpaces := bgrammsCount(textSpaces)
+	crossedBgramssNoSpaces, unCrossedBgramssNoSpaces := bgrammsCount(textNoSpaces)
+
+	crossFreqSpace, uncrossFreqSpaces := bgrammsFreq(crossedBgramssSpaces, unCrossedBgramssSpaces)
+	crossFreqNoSpace, uncrossFreqNoSpaces := bgrammsFreq(crossedBgramssNoSpaces, unCrossedBgramssNoSpaces)
+
+	_, err = reportF.WriteString("Entropy for crossed bgramms with spaces: " + strconv.FormatFloat(entropy(crossFreqSpace), 'f', 6, 64))
+	check(err)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(unCrossedBgramssSpaces), 'f', 6, 64))
+	check(err)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	_, err = reportF.WriteString("Entropy for crossed bgramms without spaces: " + strconv.FormatFloat(entropy(crossFreqNoSpace), 'f', 6, 64))
+	check(err)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms without spaces: " + strconv.FormatFloat(entropy(uncrossFreqNoSpaces), 'f', 6, 64))
+	check(err)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Crossed bgramms with spaces count: \n", crossedBgramssSpaces, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Uncrossed bgramms with spaces count: \n", unCrossedBgramssSpaces, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Crossed bgramms without spaces count: \n", crossedBgramssNoSpaces, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Uncrossed bgramms without spaces count: \n", unCrossedBgramssNoSpaces, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Crossed bgramms frequency with spaces count: \n", crossFreqSpace, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Uncrossed bgramms frequency with spaces count: \n", uncrossFreqSpaces, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Crossed bgramms frequency without spaces count: \n", crossFreqNoSpace, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	writeMapToFile("Uncrossed bgramms frequency without spaces count: \n", uncrossFreqNoSpaces, reportF)
+	_, err = reportF.WriteString("\n")
+	check(err)
+
+	defer func(reportF *os.File) {
+		err := reportF.Close()
+		check(err)
+	}(reportF)
 }
