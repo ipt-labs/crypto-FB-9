@@ -46,7 +46,7 @@ func writeArrayToFile(text string, arr[]string, f *os.File){
 }
 
 func replaceLetters() (string, string) {
-	textFile, err := ioutil.ReadFile("../docs/test.txt")
+	textFile, err := ioutil.ReadFile("../docs/text.txt")
 	check(err)
 
 	clearText := string(textFile)
@@ -136,7 +136,7 @@ func bgrammsCount(text string) (map[string]float64, map[string]float64) {
 		crossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
 	}
 
-	for i := 0; i < len(textArray)-2; i += 2 {
+	for i := 0; i < len(textArray)-2; i++ {
 		unCrossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+2])]++
 	}
 
@@ -149,11 +149,12 @@ func bgrammsFreq(cross map[string]float64, unCross map[string]float64) (map[stri
 	unCrossFreq := map[string]float64{}
 
 	for key, val := range cross {
-		crossFreq[key] = val / float64(textLen-1)
+		crossFreq[key] = val / float64(textLen)
 	}
 
 	for key, val := range unCross {
-		unCrossFreq[key] = val / 2
+		//unCrossFreq[key] = val / 2
+		unCrossFreq[key] = val / float64(textLen)
 	}
 
 	return crossFreq, unCrossFreq
@@ -213,7 +214,7 @@ func main() {
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(unCrossedBgramssSpaces), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(crossFreqNoSpace), 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
