@@ -78,6 +78,8 @@ func (p PairList) Less(i, j int) bool { return p[i].Value < p[j].Value }
 //counting letters count and frequency
 func lettersCountFreq(text string) (map[string]float64, []string) {
 
+	alphabetEntropy = 0
+
 	lettersCount := map[string]float64{}
 	lettersFreq := map[string]float64{}
 	textArray := strings.Split(text, "")
@@ -136,8 +138,8 @@ func bgrammsCount(text string) (map[string]float64, map[string]float64) {
 		crossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
 	}
 
-	for i := 0; i < len(textArray)-2; i++ {
-		unCrossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+2])]++
+	for i := 0; i < len(textArray)-1; i += 2 {
+		unCrossedBgrammCount[strings.ToLower(textArray[i])+strings.ToLower(textArray[i+1])]++
 	}
 
 	return crossedBgrammCount, unCrossedBgrammCount
@@ -214,7 +216,7 @@ func main() {
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(crossFreqNoSpace), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(uncrossFreqSpaces), 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
