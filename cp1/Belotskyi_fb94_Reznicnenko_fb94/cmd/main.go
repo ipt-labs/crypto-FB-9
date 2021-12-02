@@ -150,13 +150,24 @@ func bgrammsFreq(cross map[string]float64, unCross map[string]float64) (map[stri
 	crossFreq := map[string]float64{}
 	unCrossFreq := map[string]float64{}
 
+	var lenCross float64 = 0
+	var lenUnCross float64 = 0
+
+	for _, val := range cross{
+		lenCross += val
+	}
+
+	for _, val := range unCross{
+		lenUnCross += val
+	}
+
 	for key, val := range cross {
-		crossFreq[key] = val / float64(textLen)
+		crossFreq[key] = val / lenCross
 	}
 
 	for key, val := range unCross {
 		//unCrossFreq[key] = val / 2
-		unCrossFreq[key] = val / float64(textLen)
+		unCrossFreq[key] = val / lenUnCross
 	}
 
 	return crossFreq, unCrossFreq
