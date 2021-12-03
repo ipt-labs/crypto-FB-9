@@ -150,13 +150,24 @@ func bgrammsFreq(cross map[string]float64, unCross map[string]float64) (map[stri
 	crossFreq := map[string]float64{}
 	unCrossFreq := map[string]float64{}
 
+	var lenCross float64 = 0
+	var lenUnCross float64 = 0
+
+	for _, val := range cross{
+		lenCross += val
+	}
+
+	for _, val := range unCross{
+		lenUnCross += val
+	}
+
 	for key, val := range cross {
-		crossFreq[key] = val / float64(textLen)
+		crossFreq[key] = val / lenCross
 	}
 
 	for key, val := range unCross {
 		//unCrossFreq[key] = val / 2
-		unCrossFreq[key] = val / float64(textLen)
+		unCrossFreq[key] = val / lenUnCross
 	}
 
 	return crossFreq, unCrossFreq
@@ -211,22 +222,22 @@ func main() {
 	crossFreqSpace, uncrossFreqSpaces := bgrammsFreq(crossedBgramssSpaces, unCrossedBgramssSpaces)
 	crossFreqNoSpace, uncrossFreqNoSpaces := bgrammsFreq(crossedBgramssNoSpaces, unCrossedBgramssNoSpaces)
 
-	_, err = reportF.WriteString("Entropy for crossed bgramms with spaces: " + strconv.FormatFloat(entropy(crossFreqSpace), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for crossed bgramms with spaces: " + strconv.FormatFloat(entropy(crossFreqSpace) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(uncrossFreqSpaces), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(uncrossFreqSpaces) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for crossed bgramms without spaces: " + strconv.FormatFloat(entropy(crossFreqNoSpace), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for crossed bgramms without spaces: " + strconv.FormatFloat(entropy(crossFreqNoSpace) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for uncrossed bgramms without spaces: " + strconv.FormatFloat(entropy(uncrossFreqNoSpaces), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms without spaces: " + strconv.FormatFloat(entropy(uncrossFreqNoSpaces) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
