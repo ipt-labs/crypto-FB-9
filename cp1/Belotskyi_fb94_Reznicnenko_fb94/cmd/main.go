@@ -222,22 +222,22 @@ func main() {
 	crossFreqSpace, uncrossFreqSpaces := bgrammsFreq(crossedBgramssSpaces, unCrossedBgramssSpaces)
 	crossFreqNoSpace, uncrossFreqNoSpaces := bgrammsFreq(crossedBgramssNoSpaces, unCrossedBgramssNoSpaces)
 
-	_, err = reportF.WriteString("Entropy for crossed bgramms with spaces: " + strconv.FormatFloat(entropy(crossFreqSpace), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for crossed bgramms with spaces: " + strconv.FormatFloat(entropy(crossFreqSpace) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(uncrossFreqSpaces), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms with spaces: " + strconv.FormatFloat(entropy(uncrossFreqSpaces) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for crossed bgramms without spaces: " + strconv.FormatFloat(entropy(crossFreqNoSpace), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for crossed bgramms without spaces: " + strconv.FormatFloat(entropy(crossFreqNoSpace) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
 
-	_, err = reportF.WriteString("Entropy for uncrossed bgramms without spaces: " + strconv.FormatFloat(entropy(uncrossFreqNoSpaces), 'f', 6, 64))
+	_, err = reportF.WriteString("Entropy for uncrossed bgramms without spaces: " + strconv.FormatFloat(entropy(uncrossFreqNoSpaces) / 2, 'f', 6, 64))
 	check(err)
 	_, err = reportF.WriteString("\n")
 	check(err)
