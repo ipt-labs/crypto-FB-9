@@ -1,0 +1,10 @@
+[package]
+name = "volkov_fb-94_kalinichev_fb-94_cp3"
+version = "0.1.0"
+authors = ["Belz"]
+edition = "2018"
+
+[dependencies]
+itertools = "0.10"
+once_cell = "1.8"
+regex = "1.5"
