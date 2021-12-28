@@ -48,8 +48,8 @@ def frequrence(text,n):
                  
 def encode(text,key,Alphabet_dict,Alphabet):
     encoded_letters = []
-    for i in range(0, len(text)):
-         encoded_letters.append((Alphabet_dict [text[i]]+Alphabet_dict [key[i%len(key)]])%len(Alphabet))
+    for var in range(0, len(text)):
+         encoded_letters.append((Alphabet_dict[text[var]]+Alphabet_dict [key[var%len(key)]])%len(Alphabet))
     encoded_text = Alphabet[ encoded_letters[0]]
     for i in range(1, len(encoded_letters)):
         encoded_text =  encoded_text+Alphabet[encoded_letters[i]]
@@ -129,7 +129,7 @@ def search_key(length, encoded_text,Alphabet_dict,Alphabet):
 # In[106]:
 
 
-text = open("1.txt").read()
+text = open("1.txt", encoding="utf-8").read()
 text = clear(text)
 text_merged = merge(text)
 text_merged
@@ -197,6 +197,7 @@ print(len(keys[6]))
 
 
 print(I_)
+save(r_list,list(I_.values()),'r_I')
 
 
 # In[119]:
@@ -209,14 +210,14 @@ Alphabet_dict = dict(zip(Alphabet,Alphabet_num))
 # In[107]:
 
 
-encoded_text = open("2.txt").read().replace('\n',"")
+encoded_text = open("2.txt", encoding="utf-8").read().replace('\n',"")
 # encoded_text 
 
 
 # In[108]:
 
 
-I_encoded_text  = I_r(encoded_text,r_list)
+I_encoded_text = I_r(encoded_text,r_list)
 
 
 # In[109]:
@@ -264,14 +265,14 @@ for i in bad_bloc:
     c = dict(collections.Counter(b[i]))
     f = {k: c[k] / len(decoded_text) for k in c}
     df = pd.DataFrame.from_dict(f,'index').stack().reset_index(level=0).sort_values(by=0, ascending=0).rename(columns = {'level_0': 'letter', 0: 'freq'}).reset_index(inplace=False).drop(columns= ['index'])  
-    top_f = list(data['letter'].head())
+    top_f = list(df['letter'].head())
     #df.to_csv(str(i)+'.txt')
 
 
 # In[127]:
 
 
-data
+df
 
 
 # In[ ]:
