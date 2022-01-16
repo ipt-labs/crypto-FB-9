@@ -106,12 +106,11 @@ def calc_all_bigramm_freq(alphabet, text, is_space_allowed = False, is_intersec_
             divider = text_len / 2
         bigramm_freq_dict.update({bigramm: bigramm_num_dict[bigramm]/divider})
 
-    if log_file_name != None:
-        sorted_bigramm_freq_dict = dict(sorted(bigramm_freq_dict.items(), key=lambda item: item[1], reverse=True))
+    sorted_bigramm_freq_dict = dict(sorted(bigramm_freq_dict.items(), key=lambda item: item[1], reverse=True))
+    if log_file_name is not None:
         out_df = pd.DataFrame.from_dict(sorted_bigramm_freq_dict, orient='index', columns=['Frequency'])
         out_df.to_excel(log_file_name + '.xlsx')
-
-    return bigramm_freq_dict
+    return sorted_bigramm_freq_dict
 
 def calc_bigramm_entropy(alphabet, text, is_space_allowed = False, is_intersec_allowed = False):
     bigramm_freq_dict = calc_all_bigramm_freq(alphabet, text, is_space_allowed, is_intersec_allowed)

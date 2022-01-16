@@ -1,0 +1,13 @@
+[package]
+name = "volkov_fb-94_kalinichev_fb-94_cp4"
+version = "0.1.0"
+authors = ["Belz"]
+edition = "2018"
+
+[dependencies]
+rand = "0.8"
+num-bigint = { version = "0.4", features = ["rand"]}
+num-integer = "0.1"
+num-traits = "0.2"
+num-iter = "0.1"
+num-bigint-dig = "0.7"

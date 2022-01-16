@@ -2,6 +2,7 @@ from collections import defaultdict
 from math import log
 import re
 import os
+from collections import Counter
 
 
 def filter_text(file_name: str, with_whitespace: bool) -> str:
@@ -21,15 +22,11 @@ def make_dict_of_frequency_of_chars(text: str) -> dict:
 def make_list_of_bigram(text: str, step: int) -> list:
     if len(text) % 2 == 1:
         text = text[:-1]
-    return [text[i] + text[i + 1] for i in range(0, len(text) - 1, step)]
+    return [text[i] + text[i + 1] for i in range(0, len(text), step)]
 
 
 def make_dict_of_stats_of_bigram(text: str, step: int) -> dict:
-    list_of_bigram = make_list_of_bigram(text, step)
-    dict_of_stats_of_bigram = {}
-    for bigram in set(list_of_bigram):
-        dict_of_stats_of_bigram[bigram] = text.count(bigram)
-    return dict_of_stats_of_bigram
+    return Counter(make_list_of_bigram(text, step))
 
 
 def print_results_in_file(file_name: str, dict_of_items: dict[str, float]):
