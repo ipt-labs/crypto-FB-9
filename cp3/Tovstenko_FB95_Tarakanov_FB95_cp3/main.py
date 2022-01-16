@@ -1,140 +1,96 @@
-import re
 from collections import Counter
-import math
-alphabet = ('а', 'б', 'в', 'г', 'д', 'е', 'ж', 'з', 'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц','ч','ш', 'щ', 'ь', 'ы', 'э', 'ю', 'я')
+import operator
+file = open("var3.txt", encoding="utf-8")
+alphabet = 'абвгдежзийклмнопрстуфхцчшщьыэюя'
+fileread = file.read().replace('\n',"")
 
-popbigr = ('ст', 'но', 'то', 'на', 'ен')
-dict = {}
-keylist = []
-m = 31
-
-
-def openfile(file):
-    text = open(file, 'r', encoding='utf-8')
-    text = text.read().replace('\n', '')
-    result_file = open("filtered.txt", 'w', encoding='utf-8')
-    result_file.write(text)
-    result_file = open("filtered.txt", 'r', encoding='utf-8')
-    return result_file.read()
-
-
-def bigrams(filteretext):
-    finaldic = []
-    bigram = re.findall(r'([а-яА-Я]{2})', filteretext)
-    bigram.sort()
-    for i in Counter(bigram):
-        result_file = open("filtered.txt", 'r', encoding='utf-8')
-        n = result_file.read().count(i) / m
-        dict[i] = str(round(n, 7))
-    sort_orders = sorted(dict.items(), key=lambda x: x[1], reverse=True)
-    j = 0
-    for i in sort_orders:
-        if j != 5:
-            finaldic.append(i[0])
-        else:
-            break
-        j += 1
-    return finaldic
-
-
-def posiblek(massiv, massiv1):
-    for i in massiv:
-        for j in massiv:
-            for k in massiv1:
-                for n in massiv1:
-                    if i == j:
-                        continue
-                    if k == m:
-                        continue
-                    else: keygenerator(i, j, k, n)
-
-
-def keygenerator(x1, x2, y1, y2):
-    X1 = alphabet.index(x1[0]) * m + alphabet.index(x1[1])
-    X2 = alphabet.index(x2[0]) * m + alphabet.index(x2[1])
-    Y1 = alphabet.index(y1[0]) * m + alphabet.index(y1[1])
-    Y2 = alphabet.index(y2[0]) * m + alphabet.index(y2[1])
-    XX = (X1 - X2) % (m ** 2)
-    YY = (Y1 - Y2) % (m ** 2)
-    a = (obernene(XX, m ** 2) * YY) % (m ** 2)
-    b = (Y1 - a * X1) % (m ** 2)
-    nod = math.gcd(XX, m ** 2)
-    if nod > 1:
-        if YY % nod == 0:
-            a = (obernene(XX, (m ** 2) // nod) * YY) % (m ** 2 // nod)
-            while a < m ** 2:
-                b = (Y1 - a * X1) % (m ** 2)
-                tuplekeys = (a, b)
-                keylist.append(tuplekeys)
-                a += (m ** 2) // nod
-            return keylist
-        if YY % nod != 0:
-                tuplekeys = (a, b)
-                keylist.append(tuplekeys)
-                return keylist
-
+def linear_equation(a, b, n):
+    d = gcd(a, n)
+    rev_a = revers(a, n)
+    x = []
+    if d == 1:
+        x.append((rev_a * b) % n)
     else:
-        a = (obernene(XX, m ** 2) * YY) % (m ** 2)
-        b = (Y1 - a * X1) % (m ** 2)
-        tuplekeys = (a, b)
-        keylist.append(tuplekeys)
-        return keylist
+        if (b % d) == 0:
+            a1 = a/d
+            b1 = b/d
+            n1 = n/d
+            res = (revers(a1 * b1, n1)) % n1
+            for i in range(d):
+                x.append(res + i * n1)
+    return x
 
-
-def obernene(a, mod):
-    a %= mod
-    for x in range(1, mod):
-        if ((a * x) % mod == 1): return x
-    return 1
-
-
-def analiz(text):
-    o = e = a = 0
-    ok = 0
-    for i in text:
-        if 'о' in i:
-            o += 1
-        if 'е' in i:
-            e += 1
-        if 'а' in i:
-            a += 1
-    ao = o / len(text)
-    ae = e / len(text)
-    aa = a / len(text)
-    if ao > 0.1:
-        ok += 1
-    if ae > 0.08:
-        ok += 1
-    if aa > 0.07:
-        ok += 1
-    if ok > 2:
-        return True
+def gcd(a, b):
+    if b == 0:
+        return a
     else:
+        return gcd(b, a % b)
+
+def revers(elem, mod):
+    if gcd(elem, mod) == 1:
+        for x in range(0, mod - 1):
+            ans = (elem * x) % mod
+            if ans == 1:
+                return x
+    else:
+        return 0
+
+
+def get_ngram_freq(string, n=2, step=1):
+    grams = Counter([string[i:i + n] for i in range(0, len(string) - n + 1, step)])
+    size = sum(grams.values())
+    grams = dict(((gram, grams[gram] / size) for gram in grams))
+    return list(dict(sorted(grams.items(), key=operator.itemgetter(1), reverse=True)))
+
+
+def decription(a, b):
+    opentext = ''
+    for i in range(0, len(fileread) - 1, 2):
+        bi=(a * (alphabet.find(fileread[i]) * 31 + alphabet.find(fileread[i + 1]) - b)) % (len(alphabet)**2)
+        opentext += alphabet[bi//31]+alphabet[bi % 31]
+    return opentext
+
+
+
+def check(text):
+    if 'о' not in get_ngram_freq(text, 1)[0:7]:
         return False
+    if 'е' not in get_ngram_freq(text, 1)[0:7]:
+        return False
+    if 'а' not in get_ngram_freq(text, 1)[0:7]:
+        return False
+    if 'ст' not in get_ngram_freq(text)[0:7]:
+        return False
+    if 'но' not in get_ngram_freq(text)[0:7]:
+        return False
+    else:
+        return True
 
 
-def decript(keyslist, name_of_text):
-    text = open(name_of_text, "r", encoding="utf8")
-    text = text.read()
-    textlen = len(text)
-    buff_text = ''
-    for a, b in keyslist:
-        for i in range(0, textlen, 2):
-            y = alphabet.index(text[i]) * m + alphabet.index(text[i + 1])
-            x = (obernene(a, m ** 2) * (y - b)) % (m ** 2)
-            x = alphabet[x // m] + alphabet[x % m]
-            buff_text += x
-        if analiz(buff_text):
-            global bigr
-            print("- - - - - - - - - - - - - - \n" + "Text bigrams: " + str(bigr) + "\n" + "(" + str(a) + " , " + str(
-                b) + ")" + " key was aproved!\n" + "Decoded Text:" + "\n" + buff_text)
-            break
-        else:
-            print("(" + str(a) + " , " + str(b) + ")" + " key was NOT aproved!")
-        buff_text = ''
+def FindKey():
+    for i in range(5):
+        for j in range(5):
+            for n in range(5):
+                for m in range(5):
+                    if i==j or n==m:
+                        continue
 
+                    x=alphabet.find(pop_bigr_from_language[i][0]) * len(alphabet) + alphabet.find(pop_bigr_from_language[i][1])
+                    y=alphabet.find(pop_bigr_from_language[j][0]) * len(alphabet) + alphabet.find(pop_bigr_from_language[j][1])
+                    z=alphabet.find(pop[n][0]) * len(alphabet) + alphabet.find(pop[n][1])
+                    d=alphabet.find(pop[m][0]) * len(alphabet) + alphabet.find(pop[m][1])
+                    a=linear_equation(x-y, z-d, 31**2)
+                    for numer in a:
+                        if numer != -1:
+                            b = (z-numer*x) % (31**2)
+                            if check(decription(revers(numer, 31 ** 2), b)): return decription(revers(numer, 31 ** 2), b), numer, b
 
-file = openfile("var3.txt")
-bigr = bigrams(file)
-posiblek(popbigr, bigr)
-decript(keylist, "filtered.txt")
+pop_bigr_from_language=["ст","но","то","на","ен"]
+pop=get_ngram_freq(fileread)[0:5]
+print("Популярні біграми російської мови:")
+print(pop_bigr_from_language)
+print("Найчастіші біграми нашого шифротексту:")
+print (pop)
+
+decrypted,a,b=FindKey()
+print('Текст розшифрований цими ключами\n',a,b,'\nСам текст має такий вигляд',decrypted)
